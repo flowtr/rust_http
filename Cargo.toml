@@ -1,23 +1,26 @@
 [package]
-name = "rust_client"
+name = "rust_http_client"
 version = "0.3.0"
 authors = ["Kellen Frodelius-Fujimoto <kellen@kellenfujimoto.com>", "Theo Paris <theoparisdesigns@gmail.com>"]
 description = "A command line http client"
 license-file = "LICENSE"
 readme = "README.md"
 repository = "https://gitlab.com/rakenodiax/rust-client"
+edition = "2021"
 
 [[bin]]
 path = "src/main.rs"
-name = "rc"
+name = "rhc"
 
 [dependencies]
 reqwest = "0.11.9"
 mime = "0.3.16"
 hyper = "0.14.17"
-docopt = "1.1.1"
-serde = "1.0.136"
-serde_derive = "1.0.136"
+clap = { version = "3.1.0", features = ["derive"] }
+serde = { version = "1.0.136", features = ["derive"] }
+tokio = { version = "1.17.0", features = ["full"] }
+anyhow = "1.0.54"
+ansi_term = "0.12.1"
 
 [dev-dependencies]
 mockito = "0.30.0"

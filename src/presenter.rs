@@ -1,14 +1,15 @@
-use command::CommandError;
-use response::CompletedResponse;
+use crate::response::CompletedResponse;
+use ansi_term::Color::RGB;
+use anyhow::Result;
 use std::fmt;
 
 pub struct Presenter {
     colorize: bool,
-    response: Result<CompletedResponse, CommandError>,
+    response: Result<CompletedResponse>,
 }
 
 impl Presenter {
-    pub fn new(response: Result<CompletedResponse, CommandError>) -> Presenter {
+    pub fn new(response: Result<CompletedResponse>) -> Presenter {
         Presenter {
             colorize: false,
             response,
@@ -34,17 +35,33 @@ impl fmt::Display for Presenter {
                     writeln!(f, "{}: {}", name, value.to_str().unwrap_or(""))?;
                 }
                 writeln!(f, "---")?;
-                write!(f, "{}", response.text())
+                write!(
+                    f,
+                    "{}",
+                    if self.colorize {
+                        RGB(32, 227, 64).paint(response.text()).to_string()
+                    } else {
+                        response.text()
+                    }
+                )
             }
             Presenter {
                 response: Err(err), ..
-            } => write!(f, "{}", err),
+            } => write!(
+                f,
+                "{}",
+                if self.colorize {
+                    RGB(227, 4, 32).paint(err.to_string()).to_string()
+                } else {
+                    err.to_string()
+                }
+            ),
         }
     }
 }
 
-impl From<Result<CompletedResponse, CommandError>> for Presenter {
-    fn from(res: Result<CompletedResponse, CommandError>) -> Presenter {
+impl From<Result<CompletedResponse>> for Presenter {
+    fn from(res: Result<CompletedResponse>) -> Presenter {
         Presenter {
             colorize: false,
             response: res,

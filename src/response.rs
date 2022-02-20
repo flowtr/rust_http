@@ -1,4 +1,4 @@
-use command::CommandError;
+use anyhow::Result;
 use hyper::header::HeaderMap;
 use hyper::header::CONTENT_TYPE;
 use mime::Mime;
@@ -13,7 +13,9 @@ pub struct CompletedResponse {
 }
 
 impl CompletedResponse {
-    pub fn consume_response(mut response: Response) -> Result<CompletedResponse, CommandError> {
+    pub async fn consume_response(
+        response: Response,
+    ) -> Result<CompletedResponse> {
         let headers = response.headers().to_owned();
         let mime_type = {
             headers
@@ -24,11 +26,11 @@ impl CompletedResponse {
                         .unwrap_or("")
                         .parse::<Mime>()
                         .unwrap_or(::mime::TEXT_PLAIN)
-                }).unwrap_or(::mime::TEXT_PLAIN)
+                })
+                .unwrap_or(::mime::TEXT_PLAIN)
         };
-        let mut response_bytes = vec![];
-        response.copy_to(&mut response_bytes)?;
         let status_code = response.status();
+        let response_bytes = response.bytes().await?.to_vec();
 
         Ok(CompletedResponse {
             headers,
