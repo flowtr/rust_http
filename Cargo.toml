@@ -1,0 +1,29 @@
+[package]
+name = "rust_client"
+version = "0.3.0"
+authors = ["Kellen Frodelius-Fujimoto <kellen@kellenfujimoto.com>", "Theo Paris <theoparisdesigns@gmail.com>"]
+description = "A command line http client"
+license-file = "LICENSE"
+readme = "README.md"
+repository = "https://gitlab.com/rakenodiax/rust-client"
+
+[[bin]]
+path = "src/main.rs"
+name = "rc"
+
+[dependencies]
+reqwest = "0.11.9"
+mime = "0.3.16"
+hyper = "0.14.17"
+docopt = "1.1.1"
+serde = "1.0.136"
+serde_derive = "1.0.136"
+
+[dev-dependencies]
+mockito = "0.30.0"
+criterion = "0.3.5"
+
+[[bench]]
+name = "request_benchmark"
+harness = false
+
